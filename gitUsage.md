@@ -53,5 +53,14 @@ git commit -m "just for test"
 git push
 ```
 
+## 开始自己的操作
+
+1. 创建并切换到自己的分支上
+
+```Shell
+git branch 'branchName'
+git checkout 'branchName'
+```
+
 
 
