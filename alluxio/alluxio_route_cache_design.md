@@ -35,7 +35,7 @@ NOTE：
 
 1. 如果Append的文件同时存在在Alluxio Space和HDFS space中，在Append之后会造成数据的不一致性；
 2. 由于HDFS在Append的过程中，其他的读的进程，会读取到部分Block的数据，但是不会读取到正在Append的这个block的数据；HDFS在Append的时候，是最终一致性模型；
-3. *解决办法*： Proxy层在Hdfs append之后，主动的去free(还是delete)掉该文件在Alluxio Space中的数据；在free之后，在下次读取之时，将此数据加载(还是创建)到Alluxio Space中去(如何加载)；
+3. *解决办法*： Proxy层在Hdfs append之后，主动的去free(还是delete)掉该文件在Alluxio Space中的数据；在free之后，在下次读取之时，将此数据加载(还是创建)到Alluxio Space中去(如何加载)，用户不能通过Alluxio去加载ufs的数据，只能通过我们自己去加载数据；在free和delete的时候的并发问题；
 4. 通过使用场景来进行限定；
 
 ### Create
@@ -53,9 +53,9 @@ create的时候，根据WriteType(Through)和userMustCacheList可以分为以下
 通过可以总结为如下几种情况：
 
 1. 当path在UserMustCacheList中或者WriteType为Must_Cache，proxy仅会将create转发到Alluxio Space中；
-2. 当path不知UserMustCacheList中，WriteType为Through和Cache_through的时候，Proxy仅会将Create转发到HDFS Space中；
+2. 当path不在UserMustCacheList中，WriteType为Through和Cache_through的时候，Proxy仅会将Create转发到HDFS Space中；
 
-NOTE：当我们将Ufs中的数据加载到Alluxio Space中的时候，不能通过这个create 方法来实现；可以为Alluxio添加一个loadDataFromUfs(应当用Alluxio的Worker直接去load数据，同社区版本的Alluxio load的实现);
+NOTE：当我们将Ufs中的数据加载到Alluxio Space中的时候，不能通过这个create 方法来实现；可以为Alluxio添加一个loadDataFromUfs(应当用Alluxio的Worker直接去load数据，同社区版本的Alluxio load的实现，worker的选取机制);
 
 ### Delete
 
@@ -83,3 +83,14 @@ NOTE：
 如果Alluxio Space中的元数据修改失败，则throw exception，程序终止执行；
 
 如果Alluxio Space中的元数据修改成功，但HDFS中的元数据修改失败，此时应当查询HDFS中的元数据信息，将Alluxio中的元数据进行重新设定；然后报错，返回；
+
+NOTE：当HDFS修改之后，是否要删除缓存，然后重新加载；
+
+### Open
+
+在open的时候，Proxy层会根据readtype和isUserMustCacheList去转发open操作；
+
+1. readtype在open的时候不起作用；因为alluxio Space中的数据是通过手动加载进去的；
+2. 不支持readCache操作，即将远程的Alluxio Space的数据，读到本地的Alluxio Space然后缓存起来；因为这样会造成Alluxio Space空间的使用不可控；
+3. 当open的路径是UserMustCacheList路径，proxy则不转发到HDFS 中；
+4. open先去查询要读的路径是否在Alluxio Space中，如果在Alluxio Space中，Proxy则将open转发到Alluxio Space中，否则转发到Hdfs Space中；

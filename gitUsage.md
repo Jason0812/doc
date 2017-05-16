@@ -60,6 +60,12 @@ git push
 ```Shell
 git branch 'branchName'
 git checkout 'branchName'
+#在修改完之后，先在本地的分支上提交代码；
+git commit -m "test"
+#然后切换后master进行merge
+git checkout master
+git merge 'branchName'
+git pull original master
 ```
 
 
