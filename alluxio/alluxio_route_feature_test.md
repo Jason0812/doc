@@ -160,3 +160,10 @@ bin/dfs-perf Metadata
 bin/dfs-perf-collect Metadata
 ```
 
+## 测试问题汇总
+
+```shell
+hdfs dfs -rm /guoyj/file1
+```
+
+在这种情形下，会把/guoyj/file1这个文件move到/user/bigdata/.Trash下面去，此时/user/bigdata必须在Alluxio中挂载；
