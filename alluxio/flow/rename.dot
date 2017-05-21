@@ -1,0 +1,36 @@
+digraph rename{
+	CACHE_ENBLED[shape=diamond];
+	start[shape=ellipse];
+	finish[shape=ellipse];
+	isSameSchemeAndAuthority[shape = diamond, label = "isSameSchemeAndAuthority"];
+	aRename[shape = box, label = "alluxio.rename"];
+	hRename[shape = box, label = "hdfs.rename"];
+	notSupport[shape = box, label = "NotSupportAcrossHDFSCluster"];
+	srcInAlluxio[shape = diamond, label = "srcInAlluxio"];
+	srcInList[shape = diamond, label = "srcInList"];
+	dstInList[shape = diamond, label = "dstInList"];
+	hDeleteSrc[shape = box, label = "hdfs.delete(src)"];
+	aDeleteSrc[shape = box, label = "alluxio.delete(src)"];
+	hLoad[shape = box, label = "loadFromHDFS"];
+	aThrough[shape = box, label = "throughToHDFS"];
+
+	start -> CACHE_ENBLED;
+	CACHE_ENBLED -> hRename[label = "N"];
+	CACHE_ENBLED -> dstInList[label = "Y"];
+	dstInList -> srcInAlluxio[label = "Y", color = red];
+	srcInAlluxio -> aRename[label = "Y", color = red];
+	aRename -> srcInList[color = "red"];
+	srcInList -> finish[label = "Y", color = red];
+	srcInList -> hDeleteSrc[label = "N", color = red];
+	srcInAlluxio -> hLoad[label = "N", color = red];
+	hLoad -> hDeleteSrc[color = red];
+	hDeleteSrc -> finish[color = red];
+	dstInList -> srcInAlluxio[label = "N", color = blue];
+	srcInAlluxio -> aThrough[label = "Y", color = blue];
+	aThrough -> aDeleteSrc[color = blue];
+	aDeleteSrc -> finish[color = blue];
+	srcInAlluxio -> isSameSchemeAndAuthority[label = "N", color = blue];
+	isSameSchemeAndAuthority -> hRename[label = "Y", color = blue];
+	isSameSchemeAndAuthority -> notSupport[label = "N", color = blue];
+	hRename -> finish;
+}
