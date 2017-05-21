@@ -1,0 +1,21 @@
+digraph mkdirs{
+	CACHE_ENBLED[shape=diamond];
+	start[shape=ellipse];
+	isExistInAlluxio[shape=diamond, label="alluxio.exists"];
+	inList[shape = diamond, label = "UserCacheList.inList"];
+	exception[shape = box, label = "throw exception"];
+	finish[shape=ellipse];
+	aMkdirs[shape = box, label = "alluxio.createDirectory"];
+	hMkdirs[shape = box, label= "hdfs.mkdirs"];
+
+	start -> CACHE_ENBLED;
+	CACHE_ENBLED -> hMkdirs[label = "N"];
+	CACHE_ENBLED -> inList[label = "Y"];
+	inList -> hMkdirs [label = "N"];
+	inList -> isExistInAlluxio[label = "Y"];
+	isExistInAlluxio -> exception[label = "Y"];
+	isExistInAlluxio -> aMkdirs[label = "N"];
+	aMkdirs -> finish;
+	hMkdirs -> finish;
+
+}

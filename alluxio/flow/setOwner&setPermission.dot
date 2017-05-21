@@ -1,0 +1,21 @@
+digraph set{
+	CACHE_ENBLED[shape=diamond];
+	start[shape=ellipse];
+	isExistInAlluxio[shape=diamond, label="alluxio.exists"];
+	inList[shape = diamond, label = "UserCacheList.inList"];
+	finish[shape=ellipse];
+	aSetFinished[shape = box, label = "alluxio.setxx && return"]
+	aSet[shape = box, label = "alluxio.setxx"];
+	hSet[shape = box, label = "hdfs.setxx"];
+
+	start -> CACHE_ENBLED;
+	CACHE_ENBLED -> hSet[label = "N"];
+	CACHE_ENBLED -> isExistInAlluxio[label = "Y"];
+	isExistInAlluxio -> hSet[label = "N"];
+	isExistInAlluxio -> inList[label = "Y"];
+	inList -> aSetFinished[label = "Y"];
+	inList -> aSet[label = "N"];
+	aSet -> hSet;
+	hSet -> finish;
+	aSetFinished -> finish;
+}

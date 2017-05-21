@@ -1,0 +1,16 @@
+digraph open{
+	CACHE_ENBLED[shape=diamond];
+	start[shape=ellipse];
+	isExistInAlluxio[shape=diamond, label="alluxio.exists"];
+	finish[shape=ellipse];
+	aOpen[shape = box, label = "alluxio.open"];
+	hOpen[shape = box, label = "hdfs.open"];
+
+	start -> CACHE_ENBLED;
+	CACHE_ENBLED -> hOpen[label = "N"];
+	CACHE_ENBLED -> isExistInAlluxio[label = "Y"];
+	isExistInAlluxio -> aOpen[label = "Y"];
+	isExistInAlluxio -> hOpen[label = "N"];
+	aOpen -> finish;
+	hOpen -> finish;
+}

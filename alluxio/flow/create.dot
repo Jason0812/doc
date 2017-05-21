@@ -1,0 +1,27 @@
+digraph create{
+	CACHE_ENBLED[shape=diamond];
+	start[shape=ellipse];
+	isExistInAlluxio[shape=diamond, label="alluxio.exists"];
+	inList[shape = diamond, label = "UserCacheList.inList"];
+	finish[shape=ellipse];
+	delete[shape = box, label = "alluxio.delete"];
+	aCreate[shape = box, label = "alluxio.create"];
+	hCreate[shape = box, label = "hdfs.create"];
+	isRecursive[shape = diamond, lable= "isRecursive"];
+	exception[shape = box, label = "throw exception"];
+	isDirectory[shape = diamond, label = "isDirectory"]
+	start -> CACHE_ENBLED;
+	CACHE_ENBLED -> inList[label = "Y"];
+	inList -> isExistInAlluxio[label = "Y"];
+	CACHE_ENBLED -> hCreate[label = "N"];
+	inList -> hCreate[label = "N"];
+	isExistInAlluxio -> aCreate[label = "N"];
+	isExistInAlluxio -> isRecursive[label = "Y"];
+	isRecursive -> exception[label = "N"];
+	isRecursive -> isDirectory[label = "Y"];
+	isDirectory -> exception[label = "Y"];
+	isDirectory -> delete[label = "N"];
+	delete -> aCreate;
+	aCreate -> finish;
+	hCreate -> finish;
+}

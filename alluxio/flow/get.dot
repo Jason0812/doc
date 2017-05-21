@@ -1,0 +1,16 @@
+digraph get{
+	CACHE_ENBLED[shape=diamond];
+	start[shape=ellipse];
+	isExistInAlluxio[shape=diamond, label="alluxio.exists"];
+	finish[shape=ellipse];
+	aGetFinished[shape = box, label = "alluxio.getxx"];
+	hGet[shape = box, label = "hdfs.getxx"];
+
+	start ->CACHE_ENBLED;
+	CACHE_ENBLED -> hGet[label = "N"];
+	CACHE_ENBLED -> isExistInAlluxio[label = "Y"];
+	isExistInAlluxio -> hGet[label = "N"];
+	isExistInAlluxio -> aGetFinished[label = "Y"];
+	aGetFinished -> finish;
+	hGet -> finish;
+}
