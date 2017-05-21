@@ -41,8 +41,8 @@ Hi \<UserName\>! You've successfully authenticated, but GitHub does not provide 
 
 ```shell
 git init
-git remote add original "http://xx"
-git pull original master
+git remote add origin "http://xx"
+git pull origin master
 ```
 
 这样就可以将创建的repo拿到本地；当我们本地修改之后，可以奖本地的东西提交上去；执行代码如下：

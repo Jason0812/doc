@@ -72,4 +72,12 @@ client在以上配置正确的时，会去zookeeper获取当前的lead master；
 
 **NOTE: Alluxio 的HA机制有待研究**
 
+### 测试结果
+
+通过测试打印的日志可知，Alluxio在namenode1挂了之后，会转换到namenode2上操作；
+
+*HA的功能测试*： PASS
+
+*性能测试* continue
+
  

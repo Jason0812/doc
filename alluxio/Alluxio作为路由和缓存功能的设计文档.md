@@ -10,7 +10,7 @@
 
 Alluxio社区是处理多HDFS集群的架构图如下图所示：
 
-
+![Alluxio_HDFS_Arc_Apache](.\flow\Alluxio_HDFS_Arc_Apache.png)
 
 从社区的架构图中可知，针对我们的应用场景，主要存在如下的功能不足：
 
@@ -25,7 +25,7 @@ Alluxio社区是处理多HDFS集群的架构图如下图所示：
 
 方案设计主要分为路由功能，路由加缓存功能；整体的功能设计架构图如下：
 
-
+![Proxy_Arc](.\flow\Proxy_Arc.png)
 
 从架构图中可以看出，可知: 需要实现的主要功能有Proxy功能和切断Alluxio和HDFS的联接`Load Metadata from UFS`；
 
@@ -82,6 +82,15 @@ struct MountPairInfo{
 
 ### UserMustCacheList
 
+**场景需求**：有部分数据只想缓存在Alluxio Space中，从而减轻HDFS namenode的压力；此类数据包括：
+
+1. 在MR（hive）计算过程中，hive的中间数据，比如说Jar，job.xml这类文件放到Alluxio Space中，因为Alluxio Master加的锁的颗粒度较细，从而能够提高并发度；
+2. 存储有一定时期限制的，同时此类数据是可以丢失的；比如说MR和Spark的History log（在集群数量较大的时候，此类文件的文件数量很大），可以只放进Alluxio的space中；
+   1. 减轻了对UFS的压力，包括namenode的Memory压力，和namenode的GC压力；因为频繁的创建文件和删除文件，造成一定的Memory碎片问题，在CMS中，如果触发Full GC，延迟将会是很高的（因为在较大的集群中，namenode的内存一般都是较大的，当前我们的内存是80GB（600 datanodes）；
+   2. 因为当前Alluxio Space中文件的没有副本，所以这种不能使用于需要持久化的数据；
+
+
+
 Alluxio社区不支持设置特定的目录只做Cache；为了此参数可以灵活配置，将此参数设计为client的参数，功能的实现也是放在client；
 
 1. 给社区的版本实现此功能，功能已经实现并提交PR：https://github.com/Alluxio/alluxio/pull/5413；
@@ -97,7 +106,7 @@ Alluxio社区不支持设置特定的目录只做Cache；为了此参数可以�
 
 Alluxio的各个组件与HDFS的各个组件的交互如下图所示：
 
-
+![Alluxio_HDFS_inter](.\flow\Alluxio_HDFS_inter.png)
 
 从图中可知，在4中情况下，Alluxio会与HDFS产生交互：
 
@@ -126,7 +135,7 @@ Proxy的功能主要：
 
 解析功能的时序图如下图所示：
 
-![pathResolveSeqDiagram](/Users/guoyejun/gitProject/doc/alluxio/pathResolveSeqDiagram.png)
+![pathResolveSeqDiagram](.\flow\pathResolveSeqDiagram.png)
 
 通过解析功能，可以获取当前path的`HdfsInfo (Paht, org.apache.hadoop.fs.FileSystem)`
 
