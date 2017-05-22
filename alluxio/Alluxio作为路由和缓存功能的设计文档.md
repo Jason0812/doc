@@ -124,12 +124,17 @@ Alluxio的各个组件与HDFS的各个组件的交互如下图所示：
 3. <font color =red> Need to Investigate </font>
 4. <font color =red> Need to Investigate </font>
 
+**Alluxio与UFS分离后的交互图**
+
+![Alluxio_HDFS_separate](./flow/Alluxio_HDFS_separate.png)
+
 ### Proxy
 
 Proxy的功能主要：
 
 1. 解析功能：根据path信息去解析获取HDFS的Client和HDFS Space的path信息；
 2. 接口实现：实现兼容HDFS client的API接口；
+3. load功能： 将UFS中的数据从HDFS中load进Alluxio Space中；
 
 #### 解析功能
 
@@ -147,5 +152,9 @@ Proxy层实现了API有：Append；
 
 ##### Append
 
+![append](./flow/append.png)
 
+##### Create
+
+![create](/Users/guoyejun/gitProject/gitDoc/alluxio/flow/create.png)
 
