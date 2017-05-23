@@ -128,6 +128,12 @@ Alluxio的各个组件与HDFS的各个组件的交互如下图所示：
 
 ![Alluxio_HDFS_separate](./flow/Alluxio_HDFS_separate.png)
 
+### Load
+
+load功能是指将UFS中的数据load到Alluxio的space中；
+
+![load](.\flow\load.png)
+
 ### Proxy
 
 Proxy的功能主要：
@@ -157,4 +163,29 @@ Proxy层实现了API有：Append；
 ##### Create
 
 ![create](./flow/create.png)
+
+##### mkdirs
+
+![mkdirs](.\flow\mkdirs.png)
+
+##### open
+
+![open](.\flow\open.png)
+
+##### rename
+
+![rename](.\flow\rename.png)
+
+rename目前支持两种情况：
+
+1. 文件都在UserMustCacheList中；
+2. 文件的UFS scheme必须一致；
+
+##### get
+
+![getXX](.\flow\getXX.png)
+
+##### set
+
+![setXX](.\flow\setXX.png)
 
