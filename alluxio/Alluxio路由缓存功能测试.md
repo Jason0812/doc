@@ -129,7 +129,30 @@ Mount point /guoyj is a prefix of /guoyj/alluxio
 
 ### Load功能测试
 
+Load功能是指将HDFS中的文件Load到Alluxio Space中；
 
+Alluxio Space 和HDFS space之间的协同操作(rename, set, delete)都是通过proxy来协同的；所以在Alluxio shell中的操作不会影响HDFS的数据和元数据；同理HDFS一样；
+
+```shell
+[bigdata@namenode1 ~]$ hdfs dfs -put list /user/guoyj
+
+[alluxio@namenode1 target]$ alluxio fs load /guoyj/list
+/guoyj/list loaded
+
+[alluxio@namenode1 target]$ alluxio fs ls /guoyj/
+-rw-r--r--     bigdata        supergroup     84.00B    05-23-2017 09:36:56:112  In Memory      /guoyj/list
+```
+
+将数据和元数据从AlluxioSpace中删除
+
+```shell
+[alluxio@namenode1 target]$ alluxio fs rm /guoyj/list
+/guoyj/list has been removed
+##分别在Alluxio和HDFS中check
+[alluxio@namenode1 target]$ alluxio fs ls /guoyj
+[bigdata@namenode1 ~]$ hdfs dfs -ls /user/guoyj/
+-rw-r--r--   3 bigdata supergroup         84 2017-05-23 09:36 /user/guoyj/list
+```
 
 
 
