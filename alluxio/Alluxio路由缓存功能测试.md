@@ -127,6 +127,14 @@ Mount point /guoyj is a prefix of /guoyj/alluxio
 
 通过测试结果可知：listMountPoint符合预期；
 
+### Load功能测试
+
+
+
+
+
+
+
 ## RC - API测试
 
 API的测试分为两部分，第一部分是作为路由功能的时候的API测试，第二部分是作为路由缓存功能的API测试；

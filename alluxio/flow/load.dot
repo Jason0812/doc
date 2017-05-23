@@ -1,0 +1,35 @@
+digraph open{
+	CACHE_ENBLED[shape=diamond];
+	start[shape=ellipse];
+	isExistInAlluxio[shape=diamond, label="alluxio.exists"];
+	exception[shape = box, label = "throw exception"];
+	finish[shape=ellipse];
+	aOpen[shape = box, label = "alluxio.open"];
+	getStatusForLoad[shape = box, label = "getStatusForLoad"];
+	fileInstreamRead[shape = box, label = "fileInStream.read"];
+	loadAndGenerateMetadataInAlluxioMaster[shape = box, label = "load&generateMetaInAlluxioMaster", color = green];
+	updateSteams[shape = box, label = "updateSteams(blockID)"];
+	blockInStream[shape = box, label = "blockInStream"];
+	blockCacheStream[shape = box, label = "blockCacheStream"];
+	readBlockFromAlluxioSpace[shape = diamond, label = "readBlockFromAlluxioSpace"];
+	readBlockFromUfs[shape = diamond, label = "readBlockFromUfs"];
+	AlluxioSpaceWrite[shape = box, label = "WriteToAlluxioSpace"];
+
+	start -> CACHE_ENBLED;
+	CACHE_ENBLED -> isExistInAlluxio[label = "Y"];
+	isExistInAlluxio -> finish[label = "Y"];
+	isExistInAlluxio -> getStatusForLoad[label = "N"];
+	getStatusForLoad -> loadAndGenerateMetadataInAlluxioMaster;
+	getStatusForLoad -> aOpen[label = "LoadSuccess"];
+	aOpen -> fileInstreamRead;
+	fileInstreamRead -> updateSteams;
+	updateSteams -> blockInStream[label = "update"];
+	updateSteams -> blockCacheStream[label = "update"];
+	blockInStream -> readBlockFromAlluxioSpace;
+	readBlockFromAlluxioSpace -> blockCacheStream[label = "Y"];
+	readBlockFromAlluxioSpace -> readBlockFromUfs[label = "N"];
+	readBlockFromUfs -> blockCacheStream[label = "Y"];
+	readBlockFromUfs -> exception[label = "N"];
+	exception -> finish;
+	blockCacheStream -> AlluxioSpaceWrite;
+}
