@@ -156,5 +156,5 @@ Proxy层实现了API有：Append；
 
 ##### Create
 
-![create](/Users/guoyejun/gitProject/gitDoc/alluxio/flow/create.png)
+![create](./flow/create.png)
 
