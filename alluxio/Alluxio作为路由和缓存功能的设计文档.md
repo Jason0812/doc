@@ -113,7 +113,7 @@ Alluxio的各个组件与HDFS的各个组件的交互如下图所示：
 1. Alluxio Master去HDFS namenode load metadata;
 2. 在write的时候，在不启用worker作为代理的时候，Alluxio client会与HDFS的client产生交互；
 3. 在write的时候，启用worker作为代理的时候，worker会与HDFS的client产生交互；
-4. 在read的时候，Alluxio client会与HDFS datanode交互；<font color = red> read 的情况任然需要分析</font>
+4. 在read的时候，Alluxio client会与HDFS datanode交互；
 
 针对上面存在的四种交互的分离，具体设计和实现如下：
 
@@ -121,8 +121,8 @@ Alluxio的各个组件与HDFS的各个组件的交互如下图所示：
    1. NOTE：在元数据分离的情况下，如果是通过HDFS load到Alluxio Space中的数据，Alluxio的元数据信息，应当包含UFS path的信息；(这个信息的保留在read data的时候会用到)
    2. 在我们的实际使用场景中，Alluxio Space中的数据都是通过create with WriteType.MUST_CACHE， 所以在写Alluxio Space的时候，数据不会写到 HDFS Space中去；
 2. 将参数`alluxio.user.ufs.delegation.enabled(default: true)` 设置为true的时候，这个交互就不会发生；
-3. <font color =red> Need to Investigate </font>
-4. <font color =red> Need to Investigate </font>
+3. 在我们的使用场景中，不会发生这个情况，我们的writeType都是Must_Cache;
+4. 这种交互不需要断开的；
 
 **Alluxio与UFS分离后的交互图**
 
