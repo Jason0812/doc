@@ -1,21 +1,19 @@
 digraph set{
+	label = "setPermission & setOwner";
 	CACHE_ENBLED[shape=diamond];
 	start[shape=ellipse];
-	isExistInAlluxio[shape=diamond, label="alluxio.exists"];
 	inList[shape = diamond, label = "UserCacheList.inList"];
 	finish[shape=ellipse];
-	aSetFinished[shape = box, label = "alluxio.setxx && return"]
 	aSet[shape = box, label = "alluxio.setxx"];
 	hSet[shape = box, label = "hdfs.setxx"];
-
+	NotFoundException[shape = box, label = "NotFoundException"];
+	Exception[shape = box, label = "Exception"];
 	start -> CACHE_ENBLED;
 	CACHE_ENBLED -> hSet[label = "N"];
-	CACHE_ENBLED -> isExistInAlluxio[label = "Y"];
-	isExistInAlluxio -> hSet[label = "N"];
-	isExistInAlluxio -> inList[label = "Y"];
-	inList -> aSetFinished[label = "Y"];
-	inList -> aSet[label = "N"];
-	aSet -> hSet;
+	CACHE_ENBLED -> aSet[label = "Y"];
+	aSet -> NotFoundException;
+	NotFoundException -> inList;
+	inList -> Exception[label = "Y"];
+	inList -> hSet[label = "N"];
 	hSet -> finish;
-	aSetFinished -> finish;
 }

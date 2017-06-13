@@ -6,18 +6,13 @@ digraph append{
 	delete[shape = box, label ="alluxio.delete"];
 	append[shape = box, label = "HDFS.append"]
 	exception[shape = box, label = "AlluxioNotSupportAppend"]
-	create[shape = box, label = "alluxio.create"];
-	finish[shape=ellipse]
 	start -> CACHE_ENBLED;
-	CACHE_ENBLED -> isExistInAlluxio[label = "Y"];
-	append -> finish;
-	isExistInAlluxio -> inList[label="Y"];
+	CACHE_ENBLED -> inList[label = "Y"];
 	inList -> exception[label = "Y"];
-	isExistInAlluxio -> create[label="N"];
-	create -> finish;
-	inList -> delete[label="N"];
+	inList -> isExistInAlluxio[label = "N"];
+	isExistInAlluxio -> delete[label="Y"];
+	isExistInAlluxio -> append[label = "N"];
 	delete -> append[label="delete success"];
 	CACHE_ENBLED -> append[label = "N"];
-
 }
 

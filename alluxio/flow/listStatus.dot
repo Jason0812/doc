@@ -1,0 +1,16 @@
+digraph get{
+	label = "listStatus"
+	CACHE_ENBLED[shape=diamond];
+	start[shape=ellipse];
+	finish[shape=ellipse];
+	aList[shape = box, label = "alluxio.listStatus"];
+	hList[shape = box, label = "hdfs.listStatus"];
+	inList[shape = diamond, label = "UserCacheList.inList"];
+	start ->CACHE_ENBLED;
+	CACHE_ENBLED -> hList[label = "N"];
+	CACHE_ENBLED -> inList[label = "Y"];
+	inList -> aList[label = "Y"];
+	inList -> hList[label = "N"];
+	aList -> finish;
+	hList -> finish;
+}

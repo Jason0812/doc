@@ -1,16 +1,20 @@
 digraph get{
+	label = "getFileStatus & getFileBlockLocatios"
 	CACHE_ENBLED[shape=diamond];
 	start[shape=ellipse];
-	isExistInAlluxio[shape=diamond, label="alluxio.exists"];
 	finish[shape=ellipse];
 	aGetFinished[shape = box, label = "alluxio.getxx"];
 	hGet[shape = box, label = "hdfs.getxx"];
-
+	inList[shape = diamond, label = "UserCacheList.inList"];
+	NotFoundException[shape = box, label = "NotFoundException"];
+	Exception[shape = box, label = "Exception"];
 	start ->CACHE_ENBLED;
 	CACHE_ENBLED -> hGet[label = "N"];
-	CACHE_ENBLED -> isExistInAlluxio[label = "Y"];
-	isExistInAlluxio -> hGet[label = "N"];
-	isExistInAlluxio -> aGetFinished[label = "Y"];
+	CACHE_ENBLED -> aGetFinished[label = "Y"];
+	aGetFinished -> NotFoundException;
+	NotFoundException -> inList;
+	inList -> Exception[label = "Y"];
+	inList -> hGet;
 	aGetFinished -> finish;
 	hGet -> finish;
 }

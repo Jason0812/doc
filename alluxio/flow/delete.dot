@@ -1,20 +1,18 @@
 digraph delete{
 	CACHE_ENBLED[shape=diamond];
 	start[shape=ellipse];
-	isExistInAlluxio[shape=diamond, label="alluxio.exists"];
 	inList[shape = diamond, label = "UserCacheList.inList"];
 	finish[shape=ellipse];
 	aDelete[shape = box, label ="alluxio.delete"];
-	aDeleteFinish[shape = box, label ="alluxio.delete && return"]
 	hDelete[shape = box, label = "hdfs.delete"];
+	NotFoundException[shape = box, label = "NotFoundException"];
+	Exception[shape = box, label = "Exception"];
 	start -> CACHE_ENBLED;
 	CACHE_ENBLED -> hDelete[label = "N"];
-	CACHE_ENBLED -> isExistInAlluxio[label = "Y"];
-	isExistInAlluxio -> inList[label = "Y"];
-	isExistInAlluxio -> hDelete[label = "N"];
-	inList -> aDeleteFinish[label = "Y"];
-	aDeleteFinish -> finish;
-	inList -> aDelete[label = "N"];
-	aDelete -> hDelete;
+	CACHE_ENBLED -> aDelete[label = "Y"];
+	aDelete -> NotFoundException[label = "Y"];
+	NotFoundException -> inList;
+	inList -> Exception[label = "Y"];
+	inList -> hDelete[label = "N"];
 	hDelete -> finish;
 }
